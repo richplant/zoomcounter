@@ -7,8 +7,8 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
 
-client_id = r'psM7rv52RLCFdTsK_lQVWg'
-client_secret = r'qLE3u890k24CUL0fgQd8SbsjAHOftS4s'
+client_id = r'jzhc3vZQqB5dG48PgJEQ'
+client_secret = r'7zQvuLc5cYQ42BlXIKgIwQln3pOzHe3T'
 redirect_uri = r'https://zoomcounter.herokuapp.com/callback'
 auth_uri = r'https://zoom.us/oauth/authorize'
 token_uri = r'https://zoom.us/oauth/token'
@@ -50,14 +50,12 @@ def counts():
 
     r = oauth.get(meetings_uri).json()
     meetings = r['meetings']
-    print(meetings)
 
     meeting_count = {}
     if len(meetings) > 0:
         for meeting in meetings:
             if meeting['type'] == 2:
                 meeting_id = meeting['id']
-                print(meeting_id)
                 part_uri = f'https://api.zoom.us/v2/metrics/meetings/{meeting_id}/participants'
                 r = oauth.get(part_uri, params={'page_size': 300}).json()
                 print(r)
