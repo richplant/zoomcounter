@@ -62,6 +62,8 @@ def counts():
                 if 'participants' in r.keys():
                     users = r['participants']
                     meeting_count[meeting_id] = len(users)
+                else:
+                    meeting_count[meeting_id] = 0
         if len(meeting_count) > 0:
             return jsonify(meeting_count)
     else:
