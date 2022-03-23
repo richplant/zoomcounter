@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 client_id = r'psM7rv52RLCFdTsK_lQVWg'
-redirect_uri = r'https://zoomcounter.herokuapp.com/'
+redirect_uri = r'https://zoomcounter.herokuapp.com/callback'
 auth_uri = r'https://zoom.us/oauth/authorize'
 token_uri = r'https://zoom.us/oauth/token'
 meetings_uri = r'https://api.zoom.us/v2/users/me/meetings'
@@ -17,8 +17,6 @@ meetings_uri = r'https://api.zoom.us/v2/users/me/meetings'
 def login():
     oauth = OAuth2Session(client_id, redirect_uri=redirect_uri)
     authorization_url, state = oauth.authorization_url(auth_uri)
-    print(authorization_url)
-    print(state)
     session['oauth_state'] = state
     return redirect(authorization_url)
 
