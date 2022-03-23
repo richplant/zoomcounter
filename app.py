@@ -25,10 +25,11 @@ def login():
 @app.route('/callback', methods=['GET'])
 def callback():
     code = request.args.get('code')
-    oauth = OAuth2Session(client_id, state=session['oauth_state'])
+    oauth = OAuth2Session(client_id, state=session['oauth_state'], redirect_uri=redirect_uri)
     token = oauth.fetch_token(token_uri,
                               code=code,
-                              client_secret=client_secret)
+                              client_secret=client_secret,
+                              kwargs={'grant_type': 'authorization_code'})
     print(token)
     session['oauth_token'] = token
     return redirect(url_for('.counts'))
