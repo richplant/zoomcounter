@@ -5,6 +5,7 @@ from requests_oauthlib import OAuth2Session
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
 
 client_id = r'psM7rv52RLCFdTsK_lQVWg'
 client_secret = r'qLE3u890k24CUL0fgQd8SbsjAHOftS4s'
