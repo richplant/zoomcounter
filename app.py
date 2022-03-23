@@ -1,5 +1,6 @@
 import os
 
+import requests
 from flask import Flask, session, redirect, request, url_for, jsonify
 from requests_oauthlib import OAuth2Session
 
@@ -12,6 +13,11 @@ redirect_uri = r'https://zoomcounter.herokuapp.com/callback'
 auth_uri = r'https://zoom.us/oauth/authorize'
 token_uri = r'https://zoom.us/oauth/token'
 meetings_uri = r'https://api.zoom.us/v2/users/me/meetings'
+
+
+@app.route('/')
+def main():
+    return "Nothing to see here."
 
 
 @app.route('/login')
@@ -33,7 +39,6 @@ def callback():
                               code=code,
                               client_secret=client_secret,
                               kwargs={'grant_type': 'authorization_code'})
-    print(token)
     session['oauth_token'] = token
 
     return redirect(url_for('.counts'))
@@ -43,4 +48,18 @@ def callback():
 def counts():
     oauth = OAuth2Session(client_id, token=session['oauth_token'])
 
-    return jsonify(oauth.get(meetings_uri).json())
+    r = oauth.get(meetings_uri).json()
+    meetings = r['meetings']
+
+    meeting_count = {}
+    if len(meetings) > 0:
+        for meeting in meetings:
+            if meeting['type'] == 2:
+                meeting_id = meeting['id']
+                part_uri = f'https://api.zoom.us/v2/metrics/meetings/{meeting_id}/participants'
+                r = oauth.get(part_uri, params={'page_size': 300}).json()
+                users = r['participants']
+                meeting_count[meeting_id] = len(users)
+        return jsonify(meeting_count)
+    else:
+        return "No results found."
