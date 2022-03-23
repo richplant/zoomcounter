@@ -17,14 +17,17 @@ meetings_uri = r'https://api.zoom.us/v2/users/me/meetings'
 @app.route('/login')
 def login():
     oauth = OAuth2Session(client_id, redirect_uri=redirect_uri)
-    authorization_url, state = oauth.authorization_url(auth_uri)
-    session['oauth_state'] = state
+    authorization_url, _ = oauth.authorization_url(auth_uri)
+
     return redirect(authorization_url)
 
 
 @app.route('/callback', methods=['GET'])
 def callback():
     code = request.args.get('code')
+    state = request.args.get('state')
+    session['oauth_state'] = state
+
     oauth = OAuth2Session(client_id, state=session['oauth_state'], redirect_uri=redirect_uri)
     token = oauth.fetch_token(token_uri,
                               code=code,
@@ -32,10 +35,12 @@ def callback():
                               kwargs={'grant_type': 'authorization_code'})
     print(token)
     session['oauth_token'] = token
+
     return redirect(url_for('.counts'))
 
 
 @app.route('/counts', methods=['GET'])
 def counts():
     oauth = OAuth2Session(client_id, token=session['oauth_token'])
+
     return jsonify(oauth.get(meetings_uri).json())
