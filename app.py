@@ -13,10 +13,12 @@ token_uri = r'https://zoom.us/oauth/token'
 meetings_uri = r'https://api.zoom.us/v2/users/me/meetings'
 
 
-@app.route('/')
-def main():
+@app.route('/login')
+def login():
     oauth = OAuth2Session(client_id, redirect_uri=redirect_uri)
     authorization_url, state = oauth.authorization_url(auth_uri)
+    print(authorization_url)
+    print(state)
     session['oauth_state'] = state
     return redirect(authorization_url)
 
@@ -25,6 +27,7 @@ def main():
 def callback():
     oauth = OAuth2Session(client_id, state=session['oauth_state'])
     token = oauth.fetch_token(token_uri, authorization_response=request.url)
+    print(token)
     session['oauth_token'] = token
     return redirect(url_for('.counts'))
 
