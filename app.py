@@ -7,9 +7,9 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
 
-client_id = r'jzhc3vZQqB5dG48PgJEQ'
-client_secret = r'7zQvuLc5cYQ42BlXIKgIwQln3pOzHe3T'
-redirect_uri = r'https://zoomcounter.herokuapp.com/callback'
+client_id = os.environ.get('client_id')
+client_secret = os.environ.get('client_secret')
+redirect_uri = os.environ.get('callback_url')
 auth_uri = r'https://zoom.us/oauth/authorize'
 token_uri = r'https://zoom.us/oauth/token'
 meetings_uri = r'https://api.zoom.us/v2/users/me/meetings'
