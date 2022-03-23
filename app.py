@@ -23,9 +23,7 @@ def login():
 
 @app.route('/callback', methods=['GET'])
 def callback():
-    oauth = OAuth2Session(client_id, state=session['oauth_state'])
-    token = oauth.fetch_token(token_uri, authorization_response=request.url)
-    print(token)
+    token = request.args.get('code')
     session['oauth_token'] = token
     return redirect(url_for('.counts'))
 
