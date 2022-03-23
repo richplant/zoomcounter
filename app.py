@@ -1,6 +1,5 @@
 import os
 
-import requests
 from flask import Flask, session, redirect, request, url_for, jsonify
 from requests_oauthlib import OAuth2Session
 
@@ -50,14 +49,17 @@ def counts():
 
     r = oauth.get(meetings_uri).json()
     meetings = r['meetings']
+    print(meetings)
 
     meeting_count = {}
     if len(meetings) > 0:
         for meeting in meetings:
             if meeting['type'] == 2:
                 meeting_id = meeting['id']
+                print(meeting_id)
                 part_uri = f'https://api.zoom.us/v2/metrics/meetings/{meeting_id}/participants'
                 r = oauth.get(part_uri, params={'page_size': 300}).json()
+                print(r)
                 users = r['participants']
                 meeting_count[meeting_id] = len(users)
         return jsonify(meeting_count)
