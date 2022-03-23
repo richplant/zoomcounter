@@ -58,9 +58,10 @@ def counts():
                 meeting_id = meeting['id']
                 part_uri = f'https://api.zoom.us/v2/metrics/meetings/{meeting_id}/participants'
                 r = oauth.get(part_uri, params={'page_size': 300}).json()
-                print(r)
-                users = r['participants']
-                meeting_count[meeting_id] = len(users)
-        return jsonify(meeting_count)
+                if 'participants' in r.keys():
+                    users = r['participants']
+                    meeting_count[meeting_id] = len(users)
+        if len(meeting_count) > 0:
+            return jsonify(meeting_count)
     else:
         return "No results found."
