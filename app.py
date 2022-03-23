@@ -22,6 +22,7 @@ def main():
 
 @app.route('/login')
 def login():
+    session.clear()
     oauth = OAuth2Session(client_id, redirect_uri=redirect_uri)
     authorization_url, _ = oauth.authorization_url(auth_uri)
 
